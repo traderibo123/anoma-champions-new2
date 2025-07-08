@@ -1,9 +1,12 @@
-const fetchRankForDuration = async (username, duration) => {
+const fetchRankForDuration = async (username: string, duration: string) => {
   const url = `https://hub.kaito.ai/api/v1/gateway/ai/kol/mindshare/top-leaderboard?duration=${duration}&topic_id=ANOMA&top_n=100&customized_community=customized&community_yaps=true`;
   const res = await fetch(url);
   const json = await res.json();
 
-  const user = json.find(
+  // Kaito bazı durumlarda 'data' içinde döndürüyor
+  const leaderboard = Array.isArray(json) ? json : json.data;
+
+  const user = leaderboard.find(
     (entry) => entry.username.toLowerCase() === username.toLowerCase()
   );
 
@@ -38,8 +41,9 @@ export default async function handler(req, res) {
 
     res.status(200).json(response);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to fetch leaderboard data", details: error.message });
+    res.status(500).json({
+      error: "Failed to fetch leaderboard data",
+      details: error.message,
+    });
   }
 }
