@@ -2,7 +2,8 @@ const fetchRankForDuration = async (username, duration) => {
   const url = `https://hub.kaito.ai/api/v1/gateway/ai/kol/mindshare/top-leaderboard?duration=${duration}&topic_id=ANOMA&top_n=100&customized_community=customized&community_yaps=true`;
   const res = await fetch(url);
   const json = await res.json();
-  const user = json.find((entry) => entry.username.toLowerCase() === username.toLowerCase());
+
+  const user = json.find((entry) => entry.user_handle.toLowerCase() === username.toLowerCase());
   if (!user) return { rank: null, title: "Participant" };
 
   let title = "Participant";
