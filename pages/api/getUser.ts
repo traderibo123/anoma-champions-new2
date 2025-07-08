@@ -3,8 +3,12 @@ const fetchRankForDuration = async (username: string, duration: string) => {
   const res = await fetch(url);
   const json = await res.json();
 
-  // Kaito bazı durumlarda 'data' içinde döndürüyor
-  const leaderboard = Array.isArray(json) ? json : json.data;
+  // API bazen doğrudan dizi, bazen { data: [...] }
+  const leaderboard = Array.isArray(json)
+    ? json
+    : Array.isArray(json.data)
+    ? json.data
+    : [];
 
   const user = leaderboard.find(
     (entry) => entry.username.toLowerCase() === username.toLowerCase()
